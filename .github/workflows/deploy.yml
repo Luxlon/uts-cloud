@@ -19,7 +19,7 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd ecommerce-app || git clone https://github.com/Luxlon/uts-cloud.git
+            git clone https://github.com/Luxlon/uts-cloud.git ecommerce-app || true
             cd ecommerce-app
             git pull origin main
             npm install
