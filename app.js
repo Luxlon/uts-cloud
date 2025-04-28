@@ -4,7 +4,7 @@ const mysql = require('mysql2');
 const app = express();
 const port = 3000;
 
-// Static file untuk gambar (sementara)
+// Static files (kalau kamu butuh, tapi sekarang gambar dari S3)
 app.use('/images', express.static('public/images'));
 
 // Koneksi Database
@@ -15,6 +15,7 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME
 });
 
+// Cek koneksi database
 db.connect((err) => {
   if (err) {
     console.error('Database connection error:', err);
@@ -23,27 +24,52 @@ db.connect((err) => {
   console.log('Connected to database');
 });
 
-// Route utama
+// Route utama '/'
 app.get('/', (req, res) => {
   db.query('SELECT * FROM products', (err, results) => {
     if (err) {
       console.error('Query error:', err);
-      return res.send('Error');
+      return res.send('Error fetching products');
     }
-    let html = '<h1>Product List</h1>';
+
+    let html = `
+      <html>
+        <head>
+          <title>Product Catalog</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .product { margin-bottom: 30px; }
+            img { max-width: 200px; height: auto; display: block; margin-bottom: 10px; }
+            .products-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+          </style>
+        </head>
+        <body>
+          <h1>Product Catalog</h1>
+          <div class="products-container">
+    `;
+
     results.forEach(product => {
+      const imageUrl = `${process.env.S3_BUCKET_URL}${product.image}`;
       html += `
-        <div>
+        <div class="product">
+          <img src="${imageUrl}" alt="${product.name}">
           <h2>${product.name}</h2>
-          <img src="${process.env.S3_BUCKET_URL}${product.image}" width="200">
           <p>Price: $${product.price}</p>
         </div>
       `;
     });
+
+    html += `
+          </div>
+        </body>
+      </html>
+    `;
+
     res.send(html);
   });
 });
 
-app.listen(port, () => {
+// Jalankan server
+app.listen(port, '0.0.0.0', () => {
   console.log(`Server running at http://localhost:${port}`);
 });
