@@ -3,10 +3,7 @@ const mysql = require('mysql2');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Load environment variables (optional kalau mau lebih rapi pakai dotenv package)
-// require('dotenv').config();
-
-// Konstanta langsung
+// Konstanta koneksi
 const DB_HOST = 'ecommerce-db.crcwoe0wydln.ap-southeast-2.rds.amazonaws.com';
 const DB_USER = 'admin';
 const DB_PASSWORD = 'paris364';
@@ -28,16 +25,6 @@ db.connect((err) => {
     return;
   }
   console.log('Terkoneksi ke database RDS!');
-});
-
-// Endpoint API JSON (opsional kalau kamu masih mau /products JSON)
-app.get('/products', (req, res) => {
-  db.query('SELECT * FROM products', (err, results) => {
-    if (err) {
-      return res.status(500).json({ error: err.message });
-    }
-    res.json(results);
-  });
 });
 
 // Endpoint tampilan katalog
@@ -67,8 +54,7 @@ app.get('/', (req, res) => {
     `;
 
     results.forEach(product => {
-      // Menambahkan .png kalau perlu
-      const imageUrl = `${S3_BUCKET_URL}${product.image}.png`;
+      const imageUrl = `${S3_BUCKET_URL}${product.image}`; // <<< Langsung tanpa tambahan .png
       html += `
         <div class="col-md-4">
           <div class="card shadow-sm">
@@ -90,6 +76,16 @@ app.get('/', (req, res) => {
     `;
 
     res.send(html);
+  });
+});
+
+// Endpoint JSON
+app.get('/products', (req, res) => {
+  db.query('SELECT * FROM products', (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(results);
   });
 });
 
