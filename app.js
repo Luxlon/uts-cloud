@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
       <html lang="en">
       <head>
         <meta charset="UTF-8">
-        <title>Product Catalog</title>
+        <title>Product Catalog halooooo</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
         <style>
           body { padding: 40px; background: #f8f9fa; }
