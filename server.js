@@ -9,7 +9,7 @@ const db = mysql.createConnection({
   host: 'ecommerce-db.crcwoe0wydln.ap-southeast-2.rds.amazonaws.com',
   user: 'admin',
   password: 'paris364', // Ganti dengan password kamu
-  database: 'ecommerce-db'
+  database: 'ecommerce'
 });
 
 // Cek koneksi
